@@ -1,0 +1,5 @@
+Type apenas declara um sinonimo, um novo nome para um tipo definido.
+
+Data declara um novo tipo, e os valores que este pode assumir.
+
+Newtype declara um novo tipo que é equivalente em tempo de execução

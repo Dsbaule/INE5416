@@ -1,0 +1,45 @@
+0 ≡ λf.λx. x
+1 ≡ λf.λx. f x
+2 ≡ λf.λx. f (f x)
+3 ≡ λf.λx. f (f (f x))
+4 ≡ λf.λx. f (f (f (f x))
+5 ≡ λf.λx. f (f (f (f (f x))
+6 ≡ λf.λx. f (f (f (f (f (f x))
+7 ≡ λf.λx. f (f (f (f (f (f (f x))
+8 ≡ λf.λx. f (f (f (f (f (f (f (f x))
+9 ≡ λf.λx. f (f (f (f (f (f (f (f (f x))
+10 ≡ λf.λx. f (f (f (f (f (f (f (f (f (f x))
+...
+n ≡ λf.λx. fn x
+
+
+        plus ≡ λm.λn.λf.λx. m f (n f x)
+        succ ≡ λn.λf.λx. f (n f x)
+
+        sub ≡ λm.λn. (n pred) m
+        pred ≡ λn.λf.λx. n (λg.λh. h (g f)) (λu. x) (λu. u)
+
+
+succ 0 = (λn.λf.λx. f (n f x))(λf.λx.x) = λf.λx. f ((λf.λx.x) f x))
+= λf.λx. f x = 1
+
+succ 1 = (λn.λf.λx. f (n f x))(λf.λx. f x) = λf.λx. f ((λf.λx. f x) f x))
+= λf.λx. f ((λx. f x) x) = λf.λx. f (f x) = 2
+
+succ 2 = (λn.λf.λx. f (n f x))(λf.λx. f (f x)) = λf.λx. f ((λf.λx. f (f x)) f x))
+= λf.λx. f (λx. f (f x)) x) = λf.λx. f (f (f x)) = 3
+
+plus 0 1  = ( λm.λn.λf.λx. m f (n f x) ) (λf.λx. x) (λf.λx. f x)
+          = (λn.λf.λx. (λf.λx. x) f (n f x) ) (λf.λx. f x)
+          = λf.λx. (λf.λx. x) f ((λf.λx. f x) f x)
+          = λf.λx. (λx. x) ((λx. f x) x))
+          = λf.λx. (λx. x) (f x)
+          = λf.λx. f x
+          = 1
+
+plus 1 2  = (λm.λn.λf.λx. m f (n f x)) (λf.λx. f x) (λf.λx. f (f x))
+          = (λn.λf.λx. (λf.λx. f x) f (n f x)) (λf.λx. f (f x))
+          = λf.λx. (λf.λx. f x) f ((λf.λx. f (f x)) f x)
+          = λf.λx. (λx. f x) (λx. f (f x)) x)
+          = λf.λx. (λx. f x) (f (f x))
+          = λf.λx. f (f (f x) = 3

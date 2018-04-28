@@ -1,0 +1,7 @@
+O combinador Y é uma função que satisfaz a seguinte propriedade:
+
+y f = f (y f)
+
+Em calculo lambda:
+
+Y = λf.(λx.f(x x)) (λx.f(x x))

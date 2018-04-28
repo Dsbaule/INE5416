@@ -1,0 +1,18 @@
+(defun ehTriangulo (x y z)
+    (and (< x (+ y z))
+    (and (< y (+ x z))
+    (and (< z (+ x y))
+    (and (> x (abs (- y z)))
+    (and (> y (abs (- x z)))
+    (and (> z (abs (- x y)))
+    ))))))
+)
+
+(defun main ()
+    (setq x (read))
+    (setq y (read))
+    (setq z (read))
+    (write-line (write-to-string (ehTriangulo x y z)))
+)
+
+(main)
