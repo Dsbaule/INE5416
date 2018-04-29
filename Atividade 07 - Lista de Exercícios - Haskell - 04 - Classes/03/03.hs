@@ -20,20 +20,23 @@ class (Integral x) => MeuInt x where
 
     impar a = not (par a)
 
-    primo n = primoR n 2    
+    primo n = primoR n 2
 
     primoR n r  | (r >= n) = True
-                | otherwise = (not ((mod n r) == 0)) && (primoR n (r + 1))
+                | (not ((mod n r) == 0)) = False
+                | otherwise = (primoR n (r + 1))
 
     mdc a 0 = a
     mdc a b = (mdc b (mod a b))
 
     a === b = ((bigger a b) - (smaller a b)) <= 1
 
+    -- Metodo para obter a potencia de a por b
     potencia 0 _ = 0
     potencia _ 0 = 1
     potencia a b = a * (potencia a (b-1))
 
+    -- Metodo para Multiplicação de A por B
     _ +++ 0 = 0
     a +++ b = a + (a +++ (b - 1))
 
