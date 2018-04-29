@@ -137,20 +137,83 @@
     )
 )
 
+; Crie uma função com a seguinte assinatura: posordem (arv), a qual deve retornar a lista de números
+; visitados em percorrimento pós-ordem.
+
+(defun posordem (arv)
+    (if (not (null arv))
+        (nconc (nconc (posordem (no-esq arv)) (posordem (no-dir arv))) (list (no-n arv))))
+)
+
+; Crie uma função com a seguinte assinatura: preordem (arv), a qual deve retornar a lista de números
+; visitados em percorrimento pré-ordem.
+
+(defun preordem (arv)
+    (if (not (null arv))
+        (nconc (nconc (list (no-n arv)) (posordem (no-esq arv))) (posordem (no-dir arv))))
+)
+
+; Crie uma função com a seguinte assinatura: emordem (arv), a qual deve retornar a lista de números
+; visitados em percorrimento em-ordem.
+
+(defun emordem (arv)
+    (if (not (null arv))
+        (nconc (nconc (posordem (no-esq arv)) (list (no-n arv))) (posordem (no-dir arv))))
+)
+
+; Crie uma função com a seguinte assinatura: subtraiParesImpares (arv), a qual deve retornar a
+; soma de todos os números pares - (menos) a soma de todos os números ı́mpares.
+
+(defun subtraiParesImpares (arv)
+    (if (not (null arv))
+            (+ (+ (if (ehPar (no-n arv)) (no-n arv) (- (no-n arv))) (subtraiParesImpares (no-esq arv))) (subtraiParesImpares (no-dir arv)))
+            0
+    )
+)
+
+(defun ehPar (n)
+    (= (mod n 2) 0)
+)
+
+; Crie uma função com a seguinte assinatura: novoNo (x), a qual recebe um número como parâmetro
+; e deve retornar uma nova árvore com apenas o nó contendo o valor x.
+
+(defun novoNo (x)
+    (make-no :n x :esq NIL :dir NIL)
+)
+
+; Crie uma função com a seguinte assinatura: inserir (arv x), a qual recebe um número como
+; parâmetro deve inserı́-lo na árvore respeitando as seguintes condições:
+
+    ; • Tente adicioná-lo primeiramente em um nó interno com ou a árvore direita ou a árvore esquerda
+    ; nula (mas não ambas nulas).
+
+    ; • Se não for possı́vel, transforme uma folha em um nó interno adicionando x ou no lado esquerdo
+    ; ou no lado direito do nó.
+
+(defun inserir (arv x)
+    
+)
+
 (defun main()
-    (write-line (write-to-string (soma minhaArvore)))
-    (write-line (write-to-string (buscaElemento minhaArvore 35)))
-    (write-line (write-to-string (buscaElemento minhaArvore 36)))
-    (write-line (write-to-string (minimoElemento minhaArvore)))
-    (write-line (write-to-string (incrementa minhaArvore 2)))
-    (write-line (write-to-string minhaArvore))
-    (write-line (write-to-string (ocorrenciasElemento minhaArvore 34)))
-    (write-line (write-to-string (maioresQueElemento minhaArvore 50)))
-    (write-line (write-to-string (mediaElementos minhaArvore)))
-    (write-line (write-to-string (quantidade minhaArvore)))
-    (write-line (write-to-string (elementos minhaArvore)))
-    (write-line (write-to-string (substituir minhaArvore 34 36)))
-    (write-line (write-to-string (elementos minhaArvore)))
+    ;(write-line (write-to-string (soma minhaArvore)))
+    ;(write-line (write-to-string (buscaElemento minhaArvore 35)))
+    ;(write-line (write-to-string (buscaElemento minhaArvore 36)))
+    ;(write-line (write-to-string (minimoElemento minhaArvore)))
+    ;(write-line (write-to-string (incrementa minhaArvore 2)))
+    ;(write-line (write-to-string minhaArvore))
+    ;(write-line (write-to-string (ocorrenciasElemento minhaArvore 34)))
+    ;(write-line (write-to-string (maioresQueElemento minhaArvore 50)))
+    ;(write-line (write-to-string (mediaElementos minhaArvore)))
+    ;(write-line (write-to-string (quantidade minhaArvore)))
+    ;(write-line (write-to-string (elementos minhaArvore)))
+    ;(write-line (write-to-string (substituir minhaArvore 34 36)))
+    ;(write-line (write-to-string (elementos minhaArvore)))
+    (write-line (write-to-string (posordem minhaArvore)))
+    (write-line (write-to-string (preordem minhaArvore)))
+    (write-line (write-to-string (emordem minhaArvore)))
+    (write-line (write-to-string (subtraiParesImpares minhaArvore)))
+    (write-line (write-to-string (novoNo 10)))
 )
 
 (main)
