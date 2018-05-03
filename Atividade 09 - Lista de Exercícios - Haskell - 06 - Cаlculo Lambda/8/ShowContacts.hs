@@ -1,4 +1,6 @@
 module ShowContacts (showContacts) where
 
+showContacts :: IO()
 showContacts = do
-    (print "Mostrado")
+    f <- readFile "contatos.txt"
+    putStrLn     f

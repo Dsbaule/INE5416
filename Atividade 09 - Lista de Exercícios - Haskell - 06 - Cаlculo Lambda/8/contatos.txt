@@ -1,0 +1,5 @@
+NOME	|	IDADE	|	SEXO	|	EMAIL	|	TELEFONE
+
+Daniel	|	20	|	M	|	dsbaule	|	91
+Pablo	|	19	|	M	|	pb	|	91
+Jose	|	5	|	F	|	j	|	19
