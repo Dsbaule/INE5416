@@ -73,7 +73,7 @@ adicionaProduto = do
     let codigoProduto = (read input :: Codigo)
     putStr "Nome = "
     input <- getLine
-    let nomeProduto = (read input)
+    let nomeProduto = (read input   )
     putStr "Quantidade em estoque = "
     input <- getLine
     let quantidadeProduto = (read input :: Quantidade)
