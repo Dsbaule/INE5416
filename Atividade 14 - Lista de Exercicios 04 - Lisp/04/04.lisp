@@ -1,0 +1,31 @@
+(defun segundoMenor (v)
+    (menorElementoExcluindo v (menorElemento v))
+)
+
+(defun menorElemento (v)
+    (if (null (cdr v))
+        (car v)
+        (menor (car v) (menorElemento (cdr v)))
+    )
+)
+
+(defun menorElementoExcluindo (v n)
+    (if (null (cdr v))
+        (if (= (car v) n)
+            ()
+            (car v)
+        )
+        (if (= (car v) n)
+            (menorElementoExcluindo (cdr v) n)
+            (menor (car v) (menorElementoExcluindo (cdr v) n))
+        )
+    )
+)
+
+(defun menor (a b) (if (< a b) a b))
+
+(defun main ()
+    (write-line (write-to-string (segundoMenor '(2 4 5 6 3 7))))
+)
+
+(main)
