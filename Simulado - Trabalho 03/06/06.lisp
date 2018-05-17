@@ -1,9 +1,9 @@
 (setf x (make-array '(4 3) ;criando uma matriz 3x3
-   :initial-contents '((1 0 0 ) (0 0 0) (0 0 0) (0 0 2))) ;inicializando a matriz com alguns valores
+   :initial-contents '((1 5 9 ) (2 6 10) (3 7 11) (4 8 12))) ;inicializando a matriz com alguns valores
 )
 
 (defun rotacionar (a n)
-    (rotacionarRecursiva a (mod n 4))
+    (rotacionarRecursiva a (mod n (array-dimension a 1)))
 )
 
 (defun rotacionarRecursiva (a n)
@@ -11,26 +11,24 @@
 )
 
 (defun rotacionarParaDireita (a)
-    (setq n (array-dimension x 0))
-    (setq m (array-dimension x 1))
-    (setf y (make-array (cons n m)))
+    (setq n (array-dimension a 0))
+    (setq m (array-dimension a 1))
     (dotimes (i n)
+        (setq y (aref a i (- m 1)))
         (dotimes (j m)
-            (setf (aref y j i) (aref x i (- (- m 1) j)))
+            (if (= j (- m 1))
+                (setf (aref a i (- (- m 1) j)) y)
+                (setf (aref a i (- (- m 1) j)) (aref a i (- (- m 2) j)))
+            )
         )
     )
-    y
+    a
 )
 
 (defun main ()
+    (setq n (read))
     (write-line (write-to-string x))
-    (setq n (array-dimension x 0))
-    (setq m (array-dimension x 1))
-    (setf y (make-array (cons n m)))
-    (write-line (write-to-string (rotacionar x 1)))
-    (write-line (write-to-string (rotacionar x 2)))
-    (write-line (write-to-string (rotacionar x 3)))
-    (write-line (write-to-string (rotacionar x 4)))
+    (write-line (write-to-string (rotacionar x n)))
 )
 
 (main)
