@@ -22,7 +22,7 @@
             ((if (< i (- m 1)) (checaCaminho (achaCaminhoAPartir a m n (+ i 1) j)  m n) NIL) (achaCaminhoAPartir a m n (+ i 1) j))
             ((if (< j (- n 1)) (checaCaminho (achaCaminhoAPartir a m n i (+ j 1))  m n) NIL) (achaCaminhoAPartir a m n i (+ j 1)))
             a
-            ))
+            ))  
         )
     )
 )

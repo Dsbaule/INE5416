@@ -66,7 +66,7 @@
     (if (null arv)
         NIL
         (or
-            (= (no-n arv) x)
+            (= (no-n arv) x)    
             (buscaElemento (no-esq arv) x)
             (buscaElemento (no-dir arv) x)
         )
