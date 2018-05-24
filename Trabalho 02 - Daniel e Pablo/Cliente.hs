@@ -34,16 +34,6 @@ getSexo (cod, nome, cidade, idade, sexo) =  sexo
 ------------------------------ Funções Principais ------------------------------
 --------------------------------------------------------------------------------
 
-relatorioDeClientes :: IO()
-relatorioDeClientes = do
-    putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
-    x <- openFile "cliente.db" ReadMode
-    cont <- hGetContents x
-    let fLines = lines cont
-    let listaClientes = converteStringsClientes fLines
-    printClientes listaClientes
-    putStrLn "\n"
-
 adicionarCliente :: IO()
 adicionarCliente = do
     hSetBuffering stdout NoBuffering
@@ -67,6 +57,61 @@ adicionarCliente = do
     writeNewCliente (codigo, nome, cidade, idade, sexo)
     putStrLn "Cliente adicionado.\n\n"
 
+removerCliente :: IO()
+removerCliente = do
+    putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
+    x <- openFile "cliente.db" ReadMode
+    cont <- hGetContents x
+    let fLines = lines cont
+    let listaClientes = converteStringsClientes fLines
+    printClientes listaClientes
+    putStrLn "\nCodigo do cliente a remover: "
+    input <- getLine
+    let codigo = (read input :: Codigo)
+    let novaListaClientes = (removeCliente listaClientes codigo)
+    printClientes novaListaClientes
+    overwriteClientes novaListaClientes
+
+alterarCliente :: IO()
+alterarCliente = do
+    putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
+    x <- openFile "cliente.db" ReadMode
+    cont <- hGetContents x
+    let fLines = lines cont
+    let listaClientes = converteStringsClientes fLines
+    printClientes listaClientes
+    putStrLn "\nCodigo do cliente a alterar: "
+    input <- getLine
+    let codigo = (read input :: Codigo)
+    putStrLn "\nDigite os novos dados: "
+    putStr "\tNome = "
+    input <- getLine
+    let nome = (read $ show input :: Nome)
+    putStr "\tCidade = "
+    input <- getLine
+    let cidade = (read $ show input :: Cidade)
+    putStr "\tIdade = "
+    input <- getLine
+    let idade = (read input :: Idade)
+    putStr "\tSexo = "
+    input <- getChar
+    let sexo = input
+    putStrLn "\n"
+    input <- getLine
+    let novaListaClientes = (removeCliente listaClientes codigo)
+    overwriteClientes novaListaClientes
+    writeNewCliente (codigo, nome, cidade, idade, sexo)
+
+relatorioDeClientes :: IO()
+relatorioDeClientes = do
+    putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
+    x <- openFile "cliente.db" ReadMode
+    cont <- hGetContents x
+    let fLines = lines cont
+    let listaClientes = converteStringsClientes fLines
+    printClientes listaClientes
+    putStrLn "\n"
+
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
 --------------------------------------------------------------------------------
@@ -81,10 +126,21 @@ printCliente :: Cliente -> IO()
 printCliente (cod, nome, cidade, idade, 'M') = putStrLn ((show cod) ++ " - " ++ nome ++ " - " ++ cidade ++ " - " ++ (show idade) ++ " - " ++ "Masculino")
 printCliente (cod, nome, cidade, idade, 'F') = putStrLn ((show cod) ++ " - " ++ nome ++ " - " ++ cidade ++ " - " ++ (show idade) ++ " - " ++ "Feminino")
 
+removeCliente :: [Cliente] -> Codigo -> [Cliente]
+removeCliente [] _ = []
+removeCliente (a:b) c   | ((getCodigo a) == c) = b
+                        | otherwise = a : (removeCliente b c)
+
+overwriteClientes :: [Cliente] -> IO()
+overwriteClientes c = do
+    x <- openFile "cliente.db" WriteMode
+    hPutStr x (converteClientesString c)
+    hClose x
+
 writeNewCliente :: Cliente -> IO()
 writeNewCliente c = do
     x <- openFile "cliente.db" AppendMode
-    hPutStrLn x (converteClienteString c)
+    hPutStr x (converteClienteString c)
     hClose x
 
 converteStringsClientes :: [String] -> [Cliente]
@@ -94,9 +150,9 @@ converteStringsClientes (c:l) = (converteStringCliente c) : (converteStringsClie
 converteStringCliente :: String -> Cliente
 converteStringCliente = read
 
-converteClientesStrings :: [Cliente] -> [String]
-converteClientesStrings [] = []
-converteClientesStrings (c:l) = (converteClienteString c) : (converteClientesStrings l)
+converteClientesString :: [Cliente] -> String
+converteClientesString [] = ""
+converteClientesString (c:l) = (converteClienteString c) ++ (converteClientesString l)
 
 converteClienteString :: Cliente -> String
-converteClienteString (codigo, nome, cidade, idade, sexo) = ("(" ++ (show codigo) ++ "," ++ (show nome) ++ ","  ++ (show cidade) ++ ","  ++ (show idade) ++ ","  ++ (show sexo) ++ ")")
+converteClienteString (codigo, nome, cidade, idade, sexo) = ("(" ++ (show codigo) ++ "," ++ (show nome) ++ ","  ++ (show cidade) ++ ","  ++ (show idade) ++ ","  ++ (show sexo) ++ ")\n")

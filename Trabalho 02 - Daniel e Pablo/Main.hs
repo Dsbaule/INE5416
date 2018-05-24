@@ -52,10 +52,10 @@ selecaoMenuCliente "1" = do
     adicionarCliente
     menuPrincipal
 selecaoMenuCliente "2" = do
-    --adicionarCliente
+    removerCliente
     menuPrincipal
 selecaoMenuCliente "3" = do
-    --alterarCliente
+    alterarCliente
     menuPrincipal
 selecaoMenuCliente "4" = do
     relatorioDeClientes
