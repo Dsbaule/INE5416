@@ -32,15 +32,14 @@ getPreco (cod, nome, quantidade, preco) =  preco
 ------------------------------ Funções Auxiliares ------------------------------
 --------------------------------------------------------------------------------
 
---leClientes :: [Cliente]
---leClientes = (converteStringsClientes (leArquivo))
---
---leArquivo :: IO [String]
---leArquivo = do
---    x <- openFile "cliente.db" ReadMode
---    cont <- hGetContents x
---    let fLines = lines cont
---    fLines
+printProdutos :: [Produto] -> IO()
+printProdutos [] = putStr ""
+printProdutos (c:l) = do
+    printProduto c
+    printProdutos l
+
+printProduto :: Produto -> IO()
+printProduto (cod, nome, quantidade, preco) = putStrLn ((show cod) ++ " - " ++ nome ++ (show quantidade) ++ (show preco))
 
 converteStringsProdutos :: [String] -> [Produto]
 converteStringsProdutos [] = []
