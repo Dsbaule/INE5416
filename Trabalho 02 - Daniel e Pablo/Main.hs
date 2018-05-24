@@ -26,7 +26,7 @@ selecaoMenuPrincipal "1" = do
     menuCliente
     menuPrincipal
 selecaoMenuPrincipal "2" = do
-    --menuProduto
+    menuProduto
     menuPrincipal
 selecaoMenuPrincipal "3" = do
     --menuVenda
@@ -65,6 +65,34 @@ selecaoMenuCliente "S" = do
 selecaoMenuCliente _ = do
     putStrLn "Opcao Invalida"
 
+menuProduto :: IO()
+menuProduto = do
+    putStrLn "Produto:"
+    putStrLn "1 - Adicionar Produto"
+    putStrLn "2 - Remover Produto"
+    putStrLn "3 - Alterar Produto"
+    putStrLn "4 - Relatorio de Produtos"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuProduto r
+
+selecaoMenuProduto :: String -> IO()
+selecaoMenuProduto "1" = do
+    adicionarProduto
+    menuPrincipal
+selecaoMenuProduto "2" = do
+    removerProduto
+    menuPrincipal
+selecaoMenuProduto "3" = do
+    alterarProduto
+    menuPrincipal
+selecaoMenuProduto "4" = do
+    relatorioDeProdutos
+    menuPrincipal
+selecaoMenuProduto "S" = do
+    putStrLn "Saindo..."
+selecaoMenuProduto _ = do
+    putStrLn "Opcao Invalida"
 
 -- Leitura das Listas
 readData :: IO()
