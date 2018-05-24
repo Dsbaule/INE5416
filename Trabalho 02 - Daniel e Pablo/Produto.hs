@@ -47,9 +47,8 @@ adicionarProduto = do
     putStr "Preco = "
     input <- getLine
     let preco = (read input :: Preco)
-    putStrLn "\n"
     writeNewProduto (codigo, nome, quantidade, preco)
-    putStrLn "Produto adicionado.\n\n"
+    putStrLn "\nProduto adicionado."
 
 removerProduto :: IO()
 removerProduto = do
@@ -74,7 +73,7 @@ alterarProduto = do
     let fLines = lines cont
     let listaProdutos = converteStringsProdutos fLines
     printProdutos listaProdutos
-    putStrLn "\nCodigo do produto a remover: "
+    putStr "\nCodigo do produto a alterar: "
     input <- getLine
     let codigo = (read input :: Codigo)
     putStrLn "\nDigite os novos dados: "
@@ -99,7 +98,6 @@ relatorioDeProdutos = do
     let fLines = lines cont
     let listaProdutos = converteStringsProdutos fLines
     printProdutos listaProdutos
-    putStrLn "\n"
 
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------

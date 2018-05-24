@@ -13,7 +13,7 @@ main = do
 
 menuPrincipal :: IO()
 menuPrincipal = do
-    putStrLn "Selecione a opcao desejada:"
+    putStrLn "\nSelecione a opcao desejada:"
     putStrLn "1 - Cliente"
     putStrLn "2 - Produto"
     putStrLn "3 - Venda"
@@ -29,16 +29,17 @@ selecaoMenuPrincipal "2" = do
     menuProduto
     menuPrincipal
 selecaoMenuPrincipal "3" = do
-    --menuVenda
+    menuVenda
     menuPrincipal
 selecaoMenuPrincipal "S" = do
     putStrLn "Saindo..."
 selecaoMenuPrincipal _ = do
     putStrLn "Opcao Invalida"
+    menuPrincipal
 
 menuCliente :: IO()
 menuCliente = do
-    putStrLn "Cliente:"
+    putStrLn "\nCliente:"
     putStrLn "1 - Adicionar Cliente"
     putStrLn "2 - Remover Cliente"
     putStrLn "3 - Alterar Cliente"
@@ -50,24 +51,25 @@ menuCliente = do
 selecaoMenuCliente :: String -> IO()
 selecaoMenuCliente "1" = do
     adicionarCliente
-    menuPrincipal
+    menuCliente
 selecaoMenuCliente "2" = do
     removerCliente
-    menuPrincipal
+    menuCliente
 selecaoMenuCliente "3" = do
     alterarCliente
-    menuPrincipal
+    menuCliente
 selecaoMenuCliente "4" = do
     relatorioDeClientes
-    menuPrincipal
+    menuCliente
 selecaoMenuCliente "S" = do
-    putStrLn "Saindo..."
+    putStrLn "Voltando..."
 selecaoMenuCliente _ = do
     putStrLn "Opcao Invalida"
+    menuCliente
 
 menuProduto :: IO()
 menuProduto = do
-    putStrLn "Produto:"
+    putStrLn "\nProduto:"
     putStrLn "1 - Adicionar Produto"
     putStrLn "2 - Remover Produto"
     putStrLn "3 - Alterar Produto"
@@ -79,40 +81,66 @@ menuProduto = do
 selecaoMenuProduto :: String -> IO()
 selecaoMenuProduto "1" = do
     adicionarProduto
-    menuPrincipal
+    menuProduto
 selecaoMenuProduto "2" = do
     removerProduto
-    menuPrincipal
+    menuProduto
 selecaoMenuProduto "3" = do
     alterarProduto
-    menuPrincipal
+    menuProduto
 selecaoMenuProduto "4" = do
     relatorioDeProdutos
-    menuPrincipal
+    menuProduto
 selecaoMenuProduto "S" = do
-    putStrLn "Saindo..."
+    putStrLn "Voltando..."
 selecaoMenuProduto _ = do
     putStrLn "Opcao Invalida"
+    menuProduto
 
--- Leitura das Listas
-readData :: IO()
-readData = do
-    -- Le os clientes
-    x <- openFile "cliente.db" ReadMode
-    cont <- hGetContents x
-    let fLines = lines cont
-    let listaClientes = converteStringsClientes fLines
-    -- Le os produtos
-    x <- openFile "produto.db" ReadMode
-    cont <- hGetContents x
-    let fLines = lines cont
-    let listaProdutos = converteStringsProdutos fLines
-    -- Le as Vendas
-    x <- openFile "venda.db" ReadMode
-    cont <- hGetContents x
-    let fLines = lines cont
-    let listaVendas = converteStringsVendas fLines
-    -- Impressão dos dados
-    print listaClientes
-    print listaProdutos
-    print listaVendas
+menuVenda :: IO()
+menuVenda = do
+    putStrLn "\nVenda:"
+    putStrLn "1 - Registrar Venda"
+    putStrLn "2 - Relatorio de Vendas"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuVenda r
+
+selecaoMenuVenda :: String -> IO()
+selecaoMenuVenda "1" = do
+    --registrarVenda
+    menuVenda
+selecaoMenuVenda "2" = do
+    menuRelatorioVenda
+    menuVenda
+selecaoMenuVenda "S" = do
+    putStrLn "Voltando..."
+selecaoMenuVenda _ = do
+    putStrLn "Opcao Invalida"
+    menuVenda
+
+menuRelatorioVenda :: IO()
+menuRelatorioVenda = do
+    putStrLn "\nRelatorio de Vendas:"
+    putStrLn "1 - Relatorio por Intervalo"
+    putStrLn "2 - Relatorio por Cliente"
+    putStrLn "3 - Relatorio Completo"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuRelatorioVenda r
+
+selecaoMenuRelatorioVenda :: String -> IO()
+selecaoMenuRelatorioVenda "1" = do
+    relatorioDeVendasIntervalo
+    menuRelatorioVenda
+selecaoMenuRelatorioVenda "2" = do
+    relatorioDeVendasCliente
+    menuRelatorioVenda
+selecaoMenuRelatorioVenda "3" = do
+    relatorioDeVendasCompleto
+    menuRelatorioVenda
+selecaoMenuRelatorioVenda "S" = do
+    putStrLn "Voltando..."
+selecaoMenuRelatorioVenda _ = do
+    putStrLn "Opcao Invalida"
+    menuRelatorioVenda

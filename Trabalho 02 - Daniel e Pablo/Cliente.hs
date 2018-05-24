@@ -53,9 +53,9 @@ adicionarCliente = do
     putStr "Sexo = "
     input <- getChar
     let sexo = input
-    putStrLn "\n"
+    input <- getLine
     writeNewCliente (codigo, nome, cidade, idade, sexo)
-    putStrLn "Cliente adicionado.\n\n"
+    putStrLn "Cliente adicionado.\n"
 
 removerCliente :: IO()
 removerCliente = do
@@ -96,7 +96,6 @@ alterarCliente = do
     putStr "\tSexo = "
     input <- getChar
     let sexo = input
-    putStrLn "\n"
     input <- getLine
     let novaListaClientes = (removeCliente listaClientes codigo)
     overwriteClientes novaListaClientes
@@ -110,11 +109,14 @@ relatorioDeClientes = do
     let fLines = lines cont
     let listaClientes = converteStringsClientes fLines
     printClientes listaClientes
-    putStrLn "\n"
 
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
 --------------------------------------------------------------------------------
+
+getCliente :: [Cliente] -> Codigo -> Cliente
+getCliente ((cod, nome, cidade, idade, sexo):l) codigo  | (cod == codigo) = (cod, nome, cidade, idade, sexo)
+                                                        | otherwise = getCliente l codigo
 
 printClientes :: [Cliente] -> IO()
 printClientes [] = putStr ""
