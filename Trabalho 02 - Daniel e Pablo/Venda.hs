@@ -113,9 +113,75 @@ relatorioDeVendasCliente = do
     printVendas listaVendasCliente
     putStrLn ("\nValor Total do Faturamento = " ++ (show (getFaturamento listaVendasCliente)))
 
+produtosMaisVendidos :: IO()
+produtosMaisVendidos = do
+    hSetBuffering stdout NoBuffering
+    putStrLn "\nProdutos mais vendidos por Intervalo:"
+    putStrLn "\nData de Inicio:"
+    putStr "\tDia = "
+    input <- getLine
+    let diaInicio = (read input :: Dia)
+    putStr "\tMes = "
+    input <- getLine
+    let mesInicio = (read input :: Mes)
+    putStr "\tAno = "
+    input <- getLine
+    let anoInicio = (read input :: Ano)
+    putStrLn "Data de Fim:"
+    putStr "\tDia = "
+    input <- getLine
+    let diaFim = (read input :: Dia)
+    putStr "\tMes = "
+    input <- getLine
+    let mesFim = (read input :: Mes)
+    putStr "\tAno = "
+    input <- getLine
+    let anoFim = (read input :: Ano)
+
+    xv <- openFile "venda.db" ReadMode
+    contv <- hGetContents xv
+    let fLinesv = lines contv
+    let listaVendas = converteStringsVendas fLinesv
+    let listaVendasIntervalo = getVendasIntervalo listaVendas diaInicio mesInicio anoInicio diaFim mesFim anoFim
+
+    xi <- openFile "itemvenda.db" ReadMode
+    conti <- hGetContents xi
+    let fLinesi = lines conti
+    let listaItensVenda = converteStringsItensVenda fLinesi
+
+    let listItemsIntervalo = intersecao listaVendasIntervalo listaItensVenda
+    let listItemsIntervalo = intersecao listaVendasIntervalo listaItensVenda
+    print listItemsIntervalo
+
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
 --------------------------------------------------------------------------------
+
+intersecao :: [Venda] -> [ItemVenda] -> [ItemVenda]
+intersecao [] _ = []
+intersecao (v:l) iv = (getItems v iv) ++ (intersecao l iv)
+
+getItems :: Venda -> [ItemVenda] -> [ItemVenda]
+getItems _ [] = []
+getItems v ((cvi,ci,cp,pu,pd,q,t):l)    | ((getCodigoVenda   v) == cvi) = (cvi,ci,cp,pu,pd,q,t) : (getItems v l)
+                                        | otherwise = (getItems v l)
+
+joinDoubleItems :: [ItemVenda] -> [ItemVenda]
+joinDoubleItems [] = []
+joinDoubleItems (a:b) = insertDoubleItem a (joinDoubleItems b)
+
+insertDoubleItem :: ItemVenda -> [ItemVenda] -> [ItemVenda]
+insertDoubleItem a [] = [a]
+insertDoubleItem (cv1,ci1,cp1,pu1,pd1,q1,t1) ((cv2,ci2,cp2,pu2,pd2,q2,t2):l)    | (cp1 == cp2) = ()(cv2,ci2,cp2,pu2,pd2,(q2 + q1),(t1 + t2)) : l)
+                                                                                | otherwise = (cv2,ci2,cp2,pu2,pd2,q2,t2) : (insertDoubleItem (cv1,ci1,cp1,pu1,pd1,q1,t1) l)
+
+sortItems :: [ItemVenda] -> [ItemVenda]
+sortItems [] = []
+sortItems (a:b) = insertItem a (sortItems b)
+
+insertItem :: ItemVenda -> [ItemVenda] -> [ItemVenda]
+insertItem a [] = [a]
+insertItem (cv1,ci1,cp1,pu1,pd1,q1,t1) ((cv2,ci2,cp2,pu2,pd2,q2,t2):l)  | (q1 > q2) = ()
 
 printVendas :: [Venda] -> IO()
 printVendas [] = putStr ""
@@ -159,3 +225,10 @@ converteVendasStrings (v:l) = (converteVendaString v) : (converteVendasStrings l
 
 converteVendaString :: Venda -> String
 converteVendaString = show
+
+converteStringsItensVenda :: [String] -> [ItemVenda]
+converteStringsItensVenda [] = []
+converteStringsItensVenda (v:l) = (converteStringsItemVenda v) : (converteStringsItensVenda l)
+
+converteStringsItemVenda :: String -> ItemVenda
+converteStringsItemVenda = read
