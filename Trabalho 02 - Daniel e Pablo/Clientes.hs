@@ -38,7 +38,7 @@ getSexo (cod, nome, cidade, idade, sexo) =  sexo
 --------------------------------------------------------------------------------
 
 getListaClientes :: String -> [Cliente]
-getListaClientes stringClientes = converteStringClientes stringClientes
+getListaClientes = converteStringClientes
 
 leArquivoClientes :: IO String
 leArquivoClientes = do

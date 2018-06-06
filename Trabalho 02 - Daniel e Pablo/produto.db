@@ -1,5 +1,4 @@
-#Codigo,Nome,Quantidade em estoque,Preço unitário ou por Kilo
-1,"Ovo de pascoa",230,40.99
-2,"Mel",34,23.2
-3,"Manga",120,1.99
-4,"Feijao",42,2.5
+(1,"Ovo de pascoa",230,40.99)
+(2,"Mel",34,23.2)
+(3,"Manga",120,1.99)
+(4,"Feijao",42,2.5)
