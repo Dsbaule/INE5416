@@ -44,7 +44,7 @@ leArquivoProdutos = do
 --------------------------------------------------------------------------------
 
 converteStringProdutos :: String -> [Produto]
-converteStringProdutos string = converteStringsProdutos (lines string)
+converteStringProdutos = converteStringsProdutos . lines
 
 converteStringsProdutos :: [String] -> [Produto]
 converteStringsProdutos [] = []

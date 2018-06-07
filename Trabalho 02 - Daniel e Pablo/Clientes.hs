@@ -50,7 +50,7 @@ leArquivoClientes = do
 --------------------------------------------------------------------------------
 
 converteStringClientes :: String -> [Cliente]
-converteStringClientes string = converteStringsClientes (lines string)
+converteStringClientes = converteStringsClientes . lines
 
 converteStringsClientes :: [String] -> [Cliente]
 converteStringsClientes [] = []
