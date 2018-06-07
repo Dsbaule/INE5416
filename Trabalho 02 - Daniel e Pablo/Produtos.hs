@@ -132,6 +132,14 @@ writeNewProduto c = do
     hPutStr x (converteProdutoString c)
     hClose x
 
+existeProduto :: Codigo -> [Produto] -> Bool
+existeProduto _ [] = False
+existeProduto c (p:pr) = (c == (getCodigo p)) || (existeProduto c pr)
+
+getProduto :: Codigo -> [Produto] -> Produto
+getProduto c (p:pr) | (c == (getCodigo p)) = p
+                    | otherwise = getProduto c pr
+
 --------------------------------------------------------------------------------
 ----------------------- Funções para Impressão de Dados ------------------------
 --------------------------------------------------------------------------------

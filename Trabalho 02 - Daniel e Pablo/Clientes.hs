@@ -146,6 +146,10 @@ removeCliente [] _ = []
 removeCliente (a:b) c   | ((getCodigo a) == c) = b
                         | otherwise = a : (removeCliente b c)
 
+existeCliente :: Codigo -> [Cliente] -> Bool
+existeCliente _ [] = False
+existeCliente cv (c:cr) = (cv == (getCodigo c)) || (existeCliente cv cr)
+
 --------------------------------------------------------------------------------
 ----------------------- Funções para Impressão de Dados ------------------------
 --------------------------------------------------------------------------------

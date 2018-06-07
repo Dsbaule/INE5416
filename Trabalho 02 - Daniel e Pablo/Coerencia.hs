@@ -29,7 +29,7 @@ verificaCoerencia = do
     stringItensVenda <- leArquivoItensVenda
     let listaItensVenda = getListaItensVenda stringItensVenda
 
-    putStr "Verificação de Coerência: "
+    putStr "\nVerificação de Coerência: "
     putStrLn $ show (verificaSistema listaVendas listaClientes listaProdutos listaItensVenda)
 
 verificaSistema :: [Venda] -> [Cliente] -> [Produto] -> [ItemVenda] -> Bool

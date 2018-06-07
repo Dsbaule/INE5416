@@ -22,6 +22,7 @@ menuPrincipal = do
     putStrLn "1 - Cliente"
     putStrLn "2 - Produto"
     putStrLn "3 - Venda"
+    putStrLn "4 - Verifica Coerencia"
     putStrLn "S - Sair"
     r <- getLine
     selecaoMenuPrincipal r
@@ -35,6 +36,9 @@ selecaoMenuPrincipal "2" = do
     menuPrincipal
 selecaoMenuPrincipal "3" = do
     menuVenda
+    menuPrincipal
+selecaoMenuPrincipal "4" = do
+    verificaCoerencia
     menuPrincipal
 selecaoMenuPrincipal "S" = do
     putStrLn "Saindo..."
@@ -157,7 +161,7 @@ menuVenda = do
 
 selecaoMenuVenda :: String -> IO()
 selecaoMenuVenda "1" = do
-    --registrarVenda
+    menuRegistrarVenda
     menuVenda
 selecaoMenuVenda "2" = do
     menuRelatorioVenda
@@ -167,6 +171,28 @@ selecaoMenuVenda "S" = do
 selecaoMenuVenda _ = do
     putStrLn "Opcao Invalida"
     menuVenda
+
+menuRegistrarVenda :: IO()
+menuRegistrarVenda = do
+    putStrLn "\nRegistrar venda:"
+    putStrLn "1 - Registrar nova Venda"
+    putStrLn "2 - Registrar item de venda"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuRegistrarVenda r
+
+selecaoMenuRegistrarVenda :: String -> IO()
+selecaoMenuRegistrarVenda "1" = do
+    registrarVenda
+    menuRegistrarVenda
+selecaoMenuRegistrarVenda "2" = do
+    registrarItemVenda
+    menuRegistrarVenda
+selecaoMenuRegistrarVenda "S" = do
+    putStrLn "Voltando..."
+selecaoMenuRegistrarVenda _ = do
+    putStrLn "Opcao Invalida"
+    menuRegistrarVenda
 
 menuRelatorioVenda :: IO()
 menuRelatorioVenda = do

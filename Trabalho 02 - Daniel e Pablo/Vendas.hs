@@ -49,6 +49,40 @@ leArquivoVendas = do
     x <- openFile "venda.db" ReadMode
     hGetContents x
 
+registrarVenda :: IO()
+registrarVenda = do
+    hSetBuffering stdout NoBuffering
+    putStrLn "\nAdicionar venda:"
+    putStr "Codigo da Venda = "
+    input <- getLine
+    let codigoVenda = (read input :: CodigoVenda)
+    putStr "Codigo do Cliente = "
+    input <- getLine
+    let codigoCliente = (read input :: CodigoCliente)
+    putStr "Dia = "
+    input <- getLine
+    let dia = (read input :: Dia)
+    putStr "Mes = "
+    input <- getLine
+    let mes = (read input :: Mes)
+    putStr "Ano = "
+    input <- getLine
+    let ano = (read input :: Ano)
+
+    stringVendas <- leArquivoVendas
+    let listaVendas = getListaVendas stringVendas
+
+    stringClientes <- leArquivoClientes
+    let listaClientes = getListaClientes stringClientes
+
+    if (existeVenda codigoVenda listaVendas)
+        then putStrLn "\nVenda ja Existente!"
+        else if (existeCliente codigoCliente listaClientes)
+            then do
+                writeNewVenda (codigoVenda, codigoCliente, dia, mes, ano, 0.0)
+                putStrLn "Venda adicionada.\n"
+            else putStrLn "\nCliente Invalido!"
+
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
 --------------------------------------------------------------------------------
@@ -63,9 +97,9 @@ converteStringsVendas (v:l) = (converteStringVenda v) : (converteStringsVendas l
 converteStringVenda :: String -> Venda
 converteStringVenda = read
 
-converteVendasStrings :: [Venda] -> [String]
-converteVendasStrings [] = []
-converteVendasStrings (v:l) = (converteVendaString v) : (converteVendasStrings l)
+converteVendasString :: [Venda] -> String
+converteVendasString [] = []
+converteVendasString (v:l) = (converteVendaString v) ++ "\n" ++(converteVendasString l)
 
 converteVendaString :: Venda -> String
 converteVendaString = show
@@ -83,6 +117,37 @@ getVendasIntervalo ((cv, cc, d, m, a, t):l) di mi ai df mf af   | (((a > ai) || 
 getFaturamento :: [Venda] -> Float
 getFaturamento [] = 0
 getFaturamento ((cv, cc, d, m, a, t):l) = t + (getFaturamento l)
+
+writeNewVenda :: Venda -> IO()
+writeNewVenda v = do
+    x <- openFile "venda.db" AppendMode
+    hPutStr x (converteVendaString v)
+    hClose x
+
+existeVenda :: CodigoVenda -> [Venda] -> Bool
+existeVenda _ [] = False
+existeVenda cv (v:vr) = (cv == (getCodigoVenda v)) || (existeVenda cv vr)
+
+getVenda :: CodigoVenda -> [Venda] -> Venda
+getVenda c (v:vr)   | (c == (getCodigoVenda v)) = v
+                    | otherwise = getVenda c vr
+
+adicionarTotalVenda :: Venda -> Total -> [Venda] -> IO()
+adicionarTotalVenda (cv, cc, d, m, a, t) tn vs = do
+    overWriteVendas $ removeVenda vs cv
+    writeNewVenda (cv, cc, d, m, a, t + tn)
+
+overWriteVendas :: [Venda] -> IO()
+overWriteVendas v = do
+    x <- openFile "venda.db" WriteMode
+    hPutStr x (converteVendasString v)
+    hClose x
+
+
+removeVenda :: [Venda] -> CodigoVenda -> [Venda]
+removeVenda [] _ = []
+removeVenda (v:vr) c    | ((getCodigoVenda v) == c) = vr
+                        | otherwise = v : (removeVenda vr c)
 
 --------------------------------------------------------------------------------
 ----------------------- Funções para Impressão de Dados ------------------------
