@@ -3,15 +3,10 @@ module Main (main) where
 -- Importação de Pacotes
 import System.IO
 
--- Importação dos Pacotes de Dados
-import Clientes
-import Produtos
-import Vendas
-import ItensVenda
-
--- Importação dos Pacotes de Operação
-import Coerencia
-import Relatorios
+-- Importação dos Pacotes Locais
+import Cliente
+import Produto
+import Venda
 
 main = do
     (menuPrincipal)
@@ -64,35 +59,13 @@ selecaoMenuCliente "3" = do
     alterarCliente
     menuCliente
 selecaoMenuCliente "4" = do
-    menuRelatorioDeClientes
+    relatorioDeClientes
     menuCliente
 selecaoMenuCliente "S" = do
     putStrLn "Voltando..."
 selecaoMenuCliente _ = do
     putStrLn "Opcao Invalida"
     menuCliente
-
-menuRelatorioDeClientes :: IO()
-menuRelatorioDeClientes = do
-    putStrLn "\nRelatorio de Clientes:"
-    putStrLn "1 - Relatorio Completo"
-    putStrLn "2 - Relatorio de Clientes que mais compraram"
-    putStrLn "S - Voltar"
-    r <- getLine
-    selecaoMenuRelatorioDeClientes r
-
-selecaoMenuRelatorioDeClientes :: String -> IO()
-selecaoMenuRelatorioDeClientes "1" = do
-    relatorioDeClientes
-    menuRelatorioDeClientes
-selecaoMenuRelatorioDeClientes "2" = do
-    relatorioDeClientesQueMaisCompraram
-    menuRelatorioDeClientes
-selecaoMenuRelatorioDeClientes "S" = do
-    putStrLn "Voltando..."
-selecaoMenuRelatorioDeClientes _ = do
-    putStrLn "Opcao Invalida"
-    menuRelatorioDeClientes
 
 menuProduto :: IO()
 menuProduto = do
@@ -116,35 +89,13 @@ selecaoMenuProduto "3" = do
     alterarProduto
     menuProduto
 selecaoMenuProduto "4" = do
-    menuRelatorioDeProdutos
+    relatorioDeProdutos
     menuProduto
 selecaoMenuProduto "S" = do
     putStrLn "Voltando..."
 selecaoMenuProduto _ = do
     putStrLn "Opcao Invalida"
     menuProduto
-
-menuRelatorioDeProdutos :: IO()
-menuRelatorioDeProdutos = do
-    putStrLn "\nRelatorio de Produtos:"
-    putStrLn "1 - Relatorio Completo"
-    putStrLn "2 - Relatorio de Produtos mais vendidos"
-    putStrLn "S - Voltar"
-    r <- getLine
-    selecaoMenuRelatorioDeProdutos r
-
-selecaoMenuRelatorioDeProdutos :: String -> IO()
-selecaoMenuRelatorioDeProdutos "1" = do
-    relatorioDeProdutos
-    menuRelatorioDeProdutos
-selecaoMenuRelatorioDeProdutos "2" = do
-    relatorioDeProdutosMaisVendidos
-    menuRelatorioDeProdutos
-selecaoMenuRelatorioDeProdutos "S" = do
-    putStrLn "Voltando..."
-selecaoMenuRelatorioDeProdutos _ = do
-    putStrLn "Opcao Invalida"
-    menuRelatorioDeProdutos
 
 menuVenda :: IO()
 menuVenda = do
