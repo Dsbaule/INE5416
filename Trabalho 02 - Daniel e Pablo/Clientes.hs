@@ -65,24 +65,21 @@ adicionarCliente = do
     input <- getChar
     let sexo = input
     input <- getLine
-    writeNewCliente (codigo, nome, cidade, idade, sexo)
-    putStrLn "Cliente adicionado.\n"
 
-removerCliente :: IO()
-removerCliente = do
-    putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
     stringClientes <- leArquivoClientes
     let listaClientes = getListaClientes stringClientes
-    printClientes listaClientes
-    putStrLn "\nCodigo do cliente a remover: "
-    input <- getLine
-    let codigo = (read input :: Codigo)
-    let novaListaClientes = (removeCliente listaClientes codigo)
-    printClientes novaListaClientes
-    overwriteClientes novaListaClientes
+
+    if (nome == "")
+        then putStrLn "\nNome invalido!"
+        else if (existeCliente codigo listaClientes)
+            then putStrLn "\nCliente ja Existente!"
+            else do
+                writeNewCliente (codigo, nome, cidade, idade, sexo)
+                putStrLn "Cliente adicionado.\n"
 
 alterarCliente :: IO()
 alterarCliente = do
+    hSetBuffering stdout NoBuffering
     putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
     stringClientes <- leArquivoClientes
     let listaClientes = getListaClientes stringClientes

@@ -50,7 +50,7 @@ getListaItensVenda = converteStringItensVenda
 leArquivoItensVenda :: IO String
 leArquivoItensVenda = do
     x <- openFile "itemvenda.db" ReadMode
-    hGetContents x
+    contents <- hGetContents x
 
 registrarItemVenda :: IO()
 registrarItemVenda = do
@@ -78,18 +78,24 @@ registrarItemVenda = do
     stringProdutos <- leArquivoProdutos
     let listaProdutos = getListaProdutos stringProdutos
 
+
     if (existeVenda codigoVenda listaVendas)
         then if (existeProduto codigoProduto listaProdutos)
-            then do
-                let produtoVenda = getProduto codigoProduto listaProdutos
-                let precoUnitario = getPreco produtoVenda
-                let totalItemVenda = (precoUnitario * ((100.0 - (fromIntegral percentualDesconto)) / 100.0) * (fromIntegral quantidade))
-                writeNewItemVenda (codigoVenda, codigoItem, codigoProduto, precoUnitario, percentualDesconto, quantidade, totalItemVenda)
-                adicionarTotalVenda (getVenda codigoVenda listaVendas) totalItemVenda listaVendas
-                putStrLn "Venda adicionada.\n"
+            then if (percentualDesconto <= 10)
+                then do
+                    let produtoVenda = getProduto codigoProduto listaProdutos
+                    if (quantidade < (Produtos.getQuantidade produtoVenda))
+                        then do
+                            let precoUnitario = getPreco produtoVenda
+                            let totalItemVenda = (precoUnitario * ((100.0 - (fromIntegral percentualDesconto)) / 100.0) * (fromIntegral quantidade))
+                            writeNewItemVenda (codigoVenda, codigoItem, codigoProduto, precoUnitario, percentualDesconto, quantidade, totalItemVenda)
+                            adicionarTotalVenda (getVenda codigoVenda listaVendas) totalItemVenda listaVendas
+                            --removeQuantidade produtoVenda quantidade listaProdutos
+                            putStrLn "Venda adicionada.\n"
+                        else putStrLn "\nQuantidade em estoque insuficiente!"
+                else putStrLn "\nDesconto Invalido (Deve ser no máximo 10%)!"
             else putStrLn "\nProduto Invalido!"
         else putStrLn "\nVenda Invalido!"
-
 
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
@@ -133,9 +139,10 @@ estaNasVendas i (v:vr)  | ((ItensVenda.getCodigoVenda i) == (Vendas.getCodigoVen
                         | otherwise = estaNasVendas i vr
 
 writeNewItemVenda :: ItemVenda -> IO()
-writeNewItemVenda i = do
+writeNewItemVenda (cv, ci, cp, pu, pd, q, t) = do
     x <- openFile "itemvenda.db" AppendMode
-    hPutStr x (converteItemVendaString i)
+    hPutStrLn x (converteItemVendaString (cv, ci, cp, pu, pd, q, ((fromInteger $ round $ t * (10^2)) / (10.0^^2))))
+
     hClose x
 
 converteItemVendaString :: ItemVenda -> String

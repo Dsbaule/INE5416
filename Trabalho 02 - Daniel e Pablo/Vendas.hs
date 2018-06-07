@@ -134,7 +134,10 @@ getVenda c (v:vr)   | (c == (getCodigoVenda v)) = v
 
 adicionarTotalVenda :: Venda -> Total -> [Venda] -> IO()
 adicionarTotalVenda (cv, cc, d, m, a, t) tn vs = do
-    overWriteVendas $ removeVenda vs cv
+    x <- openFile "venda.db" ReadMode
+    contents <- hGetContents x
+    let novaListaVenda = removeVenda (converteStringVendas contents) cv
+    overWriteVendas novaListaVenda
     writeNewVenda (cv, cc, d, m, a, t + tn)
 
 overWriteVendas :: [Venda] -> IO()

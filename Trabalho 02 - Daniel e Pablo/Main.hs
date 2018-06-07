@@ -12,6 +12,7 @@ import ItensVenda
 -- Importação dos Pacotes de Operação
 import Coerencia
 import Relatorios
+import Remocao
 
 main = do
     (menuPrincipal)

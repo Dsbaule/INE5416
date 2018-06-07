@@ -58,19 +58,6 @@ adicionarProduto = do
     writeNewProduto (codigo, nome, quantidade, preco)
     putStrLn "\nProduto adicionado."
 
-removerProduto :: IO()
-removerProduto = do
-    putStrLn "\nProdutos (Codigo - Nome - Quantidade - Preco):"
-    stringProdutos <- leArquivoProdutos
-    let listaProdutos = getListaProdutos stringProdutos
-    printProdutos listaProdutos
-    putStrLn "\nCodigo do produto a remover: "
-    input <- getLine
-    let codigo = (read input :: Codigo)
-    let novaListaProdutos = (removeProduto listaProdutos codigo)
-    printProdutos novaListaProdutos
-    overwriteProdutos novaListaProdutos
-
 alterarProduto :: IO()
 alterarProduto = do
     putStrLn "\nProdutos (Codigo - Nome - Quantidade - Preco):"
@@ -93,6 +80,12 @@ alterarProduto = do
     let novaListaProdutos = (removeProduto listaProdutos codigo)
     overwriteProdutos novaListaProdutos
     writeNewProduto (codigo, nome, quantidade, preco)
+
+removeQuantidade :: Produto -> Quantidade -> [Produto] -> IO()
+removeQuantidade (c, n, q, p) qr lp = do
+    let novaListaProdutos = removeProduto lp c
+    overwriteProdutos novaListaProdutos
+    writeNewProduto (c, n, (q - qr), p)
 
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
