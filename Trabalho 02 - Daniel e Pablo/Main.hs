@@ -3,111 +3,171 @@ module Main (main) where
 -- Importação de Pacotes
 import System.IO
 
--- Importação dos Pacotes Locais
+-- Importação dos Pacotes de Dados
 import Clientes
 import Produtos
 import Vendas
 import ItensVenda
 
+-- Importação dos Pacotes de Operação
+import Coerencia
+import Relatorios
+
 main = do
-    -- Inicialização dos dados (listas)
-    -- Clientes:
-    stringClientes <- leArquivoClientes
-    let listaClientes = getListaClientes stringClientes
-    -- Produtos:
-    stringProdutos <- leArquivoProdutos
-    let listaProdutos = getListaProdutos stringProdutos
-    -- Vendas:
-    stringVendas <- leArquivoVendas
-    let listaVendas = getListaVendas stringVendas
-    -- Itens de Venda:
-    stringItensVenda <- leArquivoItensVenda
-    let listaItensVenda = getListaItensVenda stringItensVenda
-    putStrLn "Clientes:"
-    printClientes listaClientes
-    putStrLn "Produtos:"
-    printProdutos listaProdutos
-    putStrLn "Vendas:"
-    printVendas listaVendas
-    putStrLn "Itens de Venda:"
-    printItensVenda listaItensVenda
-    putStrLn "verificaClientes:"
-    print (verificaClientes listaVendas listaClientes)
-    putStrLn "verificaProdutos:"
-    print (verificaItens listaVendas listaProdutos listaItensVenda)
-    putStrLn "verificaSistema:"
-    print (verificaSistema listaVendas listaClientes listaProdutos listaItensVenda)
+    (menuPrincipal)
 
---------------------------------------------------------------------------------
----------------------------- Vericação de Coerência ----------------------------
---------------------------------------------------------------------------------
+menuPrincipal :: IO()
+menuPrincipal = do
+    putStrLn "\nSelecione a opcao desejada:"
+    putStrLn "1 - Cliente"
+    putStrLn "2 - Produto"
+    putStrLn "3 - Venda"
+    putStrLn "S - Sair"
+    r <- getLine
+    selecaoMenuPrincipal r
 
-verificaSistema :: [Venda] -> [Cliente] -> [Produto] -> [ItemVenda] -> Bool
-verificaSistema v c p i = (verificaClientes v c) && (verificaItens v p i)
+selecaoMenuPrincipal :: String -> IO()
+selecaoMenuPrincipal "1" = do
+    menuCliente
+    menuPrincipal
+selecaoMenuPrincipal "2" = do
+    menuProduto
+    menuPrincipal
+selecaoMenuPrincipal "3" = do
+    menuVenda
+    menuPrincipal
+selecaoMenuPrincipal "S" = do
+    putStrLn "Saindo..."
+selecaoMenuPrincipal _ = do
+    putStrLn "Opcao Invalida"
+    menuPrincipal
 
-verificaClientes :: [Venda] -> [Cliente] -> Bool
-verificaClientes [] _ = True
-verificaClientes _ [] = False
-verificaClientes (v:vr) c = (temCliente v c) && (verificaClientes vr c)
+menuCliente :: IO()
+menuCliente = do
+    putStrLn "\nCliente:"
+    putStrLn "1 - Adicionar Cliente"
+    putStrLn "2 - Remover Cliente"
+    putStrLn "3 - Alterar Cliente"
+    putStrLn "4 - Relatorio de Clientes"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuCliente r
 
-temCliente :: Venda -> [Cliente] -> Bool
-temCliente v [] = False
-temCliente v (c:cr) | ((Clientes.getCodigo c) == (Vendas.getCodigoCliente v)) = True
-                    | otherwise = temCliente v cr
+selecaoMenuCliente :: String -> IO()
+selecaoMenuCliente "1" = do
+    adicionarCliente
+    menuCliente
+selecaoMenuCliente "2" = do
+    removerCliente
+    menuCliente
+selecaoMenuCliente "3" = do
+    alterarCliente
+    menuCliente
+selecaoMenuCliente "4" = do
+    relatorioDeClientes
+    menuCliente
+selecaoMenuCliente "S" = do
+    putStrLn "Voltando..."
+selecaoMenuCliente _ = do
+    putStrLn "Opcao Invalida"
+    menuCliente
 
-verificaItens :: [Venda] -> [Produto] -> [ItemVenda] -> Bool
-verificaItens [] _ [] = True
-verificaItens _ _ [] = False
-verificaItens [] _ _ = False
-verificaItens v p i = (verificaProdutos i p) && (verificaPrecos v p i) && (verificaItensTemVenda v i)
+menuProduto :: IO()
+menuProduto = do
+    putStrLn "\nProduto:"
+    putStrLn "1 - Adicionar Produto"
+    putStrLn "2 - Remover Produto"
+    putStrLn "3 - Alterar Produto"
+    putStrLn "4 - Relatorio de Produtos"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuProduto r
 
-verificaPrecos :: [Venda] -> [Produto] -> [ItemVenda] -> Bool
-verificaPrecos v p i = (verificaPrecosUnitarios i p) && (verificaDescontos i) && (verificaTotal v i)
+selecaoMenuProduto :: String -> IO()
+selecaoMenuProduto "1" = do
+    adicionarProduto
+    menuProduto
+selecaoMenuProduto "2" = do
+    removerProduto
+    menuProduto
+selecaoMenuProduto "3" = do
+    alterarProduto
+    menuProduto
+selecaoMenuProduto "4" = do
+    menuRelatorioDeProdutos
+    menuProduto
+selecaoMenuProduto "S" = do
+    putStrLn "Voltando..."
+selecaoMenuProduto _ = do
+    putStrLn "Opcao Invalida"
+    menuProduto
 
-verificaProdutos :: [ItemVenda] -> [Produto] -> Bool
-verificaProdutos [] _ = True
-verificaProdutos _ [] = False
-verificaProdutos (i:ir) p = (temProduto i p) && (verificaProdutos ir p)
+menuRelatorioDeProdutos :: IO()
+menuRelatorioDeProdutos = do
+    putStrLn "\nRelatorio de Vendas:"
+    putStrLn "1 - Relatorio Completo"
+    putStrLn "2 - Relatorio de Produtos mais vendidos"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuRelatorioDeProdutos r
 
-temProduto :: ItemVenda -> [Produto] -> Bool
-temProduto i [] = False
-temProduto i (p:pr) | ((Produtos.getCodigo p) == (ItensVenda.getCodigoProduto i)) = True
-                    | otherwise = temProduto i pr
+selecaoMenuRelatorioDeProdutos :: String -> IO()
+selecaoMenuRelatorioDeProdutos "1" = do
+    relatorioDeProdutos
+    menuRelatorioDeProdutos
+selecaoMenuRelatorioDeProdutos "2" = do
+    relatorioDeProdutosMaisVendidos
+    menuRelatorioDeProdutos
+selecaoMenuRelatorioDeProdutos "S" = do
+    putStrLn "Voltando..."
+selecaoMenuRelatorioDeProdutos _ = do
+    putStrLn "Opcao Invalida"
+    menuRelatorioDeProdutos
 
-verificaPrecosUnitarios :: [ItemVenda] -> [Produto] -> Bool
-verificaPrecosUnitarios [] _ = True
-verificaPrecosUnitarios _ [] = False
-verificaPrecosUnitarios (i:ir) p = (verificaPrecoUnitario i p) && (verificaPrecosUnitarios ir p)
+menuVenda :: IO()
+menuVenda = do
+    putStrLn "\nVenda:"
+    putStrLn "1 - Registrar Venda"
+    putStrLn "2 - Relatorio de Vendas"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuVenda r
 
-verificaPrecoUnitario :: ItemVenda -> [Produto] -> Bool
-verificaPrecoUnitario _ [] = False
-verificaPrecoUnitario i (p:pr)  | ((Produtos.getCodigo p) == (ItensVenda.getCodigoProduto i)) = comparaPrecoUnitario i p
-                                | otherwise = verificaPrecoUnitario i pr
+selecaoMenuVenda :: String -> IO()
+selecaoMenuVenda "1" = do
+    --registrarVenda
+    menuVenda
+selecaoMenuVenda "2" = do
+    menuRelatorioVenda
+    menuVenda
+selecaoMenuVenda "S" = do
+    putStrLn "Voltando..."
+selecaoMenuVenda _ = do
+    putStrLn "Opcao Invalida"
+    menuVenda
 
-comparaPrecoUnitario :: ItemVenda -> Produto -> Bool
-comparaPrecoUnitario i p = (Produtos.getPreco p) == (ItensVenda.getPrecoUnitario i)
+menuRelatorioVenda :: IO()
+menuRelatorioVenda = do
+    putStrLn "\nRelatorio de Vendas:"
+    putStrLn "1 - Relatorio por Intervalo"
+    putStrLn "2 - Relatorio por Cliente"
+    putStrLn "3 - Relatorio Completo"
+    putStrLn "S - Voltar"
+    r <- getLine
+    selecaoMenuRelatorioVenda r
 
-verificaDescontos :: [ItemVenda] -> Bool
-verificaDescontos [] = True
-verificaDescontos (i:ir) = ((abs (((ItensVenda.getPrecoUnitario i) * (fromIntegral (ItensVenda.getQuantidade i)) * ((100.0 - (fromIntegral (ItensVenda.getPercentualDesconto i)))/100.0)) - (ItensVenda.getTotal i))) < 0.01) && (verificaDescontos ir)
-
-verificaTotal :: [Venda] -> [ItemVenda] -> Bool
-verificaTotal [] _ = True
-verificaTotal (v:vr) i = (verificaTotalVenda v i) && (verificaTotal vr i)
-
-verificaTotalVenda :: Venda -> [ItemVenda] -> Bool
-verificaTotalVenda v i = (abs ((Vendas.getTotal v) - (somaTotalVenda v i))) < 0.01
-
-somaTotalVenda :: Venda -> [ItemVenda] -> Float
-somaTotalVenda _ [] = 0.0
-somaTotalVenda v (i:ir) | ((Vendas.getCodigoVenda v) == (ItensVenda.getCodigoVenda i)) = ItensVenda.getTotal i + (somaTotalVenda v ir)
-                        | otherwise = somaTotalVenda v ir
-
-verificaItensTemVenda :: [Venda] -> [ItemVenda] -> Bool
-verificaItensTemVenda _ [] = True
-verificaItensTemVenda v (i:ir) = (temVenda i v) && (verificaItensTemVenda v ir)
-
-temVenda :: ItemVenda -> [Venda] -> Bool
-temVenda i [] = False
-temVenda i (v:vr)   | ((ItensVenda.getCodigoVenda i) == (Vendas.getCodigoVenda v)) = True
-                    | otherwise = temVenda i vr
+selecaoMenuRelatorioVenda :: String -> IO()
+selecaoMenuRelatorioVenda "1" = do
+    relatorioDeVendasIntervalo
+    menuRelatorioVenda
+selecaoMenuRelatorioVenda "2" = do
+    relatorioDeVendasCliente
+    menuRelatorioVenda
+selecaoMenuRelatorioVenda "3" = do
+    relatorioDeVendasCompleto
+    menuRelatorioVenda
+selecaoMenuRelatorioVenda "S" = do
+    putStrLn "Voltando..."
+selecaoMenuRelatorioVenda _ = do
+    putStrLn "Opcao Invalida"
+    menuRelatorioVenda

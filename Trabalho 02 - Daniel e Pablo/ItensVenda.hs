@@ -66,6 +66,33 @@ converteStringsItensVenda (v:l) = (converteStringItemVenda v) : (converteStrings
 converteStringItemVenda :: String -> ItemVenda
 converteStringItemVenda = read
 
+juntaItensPorProduto :: [ItemVenda] -> [ItemVenda]
+juntaItensPorProduto [] = []
+juntaItensPorProduto (i:ir) = insereItemPorProduto i (juntaItensPorProduto ir)
+
+insereItemPorProduto :: ItemVenda -> [ItemVenda] -> [ItemVenda]
+insereItemPorProduto (_, _, cp1, pu1, pd1, q1, t1) [] = [(1, 0, cp1, pu1, pd1, q1, t1)]
+insereItemPorProduto (_, _, cp1, pu1, pd1, q1, t1) ((nv, _, cp2, pu2, pd2, q2, t2):ir)  | (cp1 == cp2) = ((nv + 1), 0, cp1, pu1, 0, (q1 + q2), (t1 + t2)) : ir
+                                                                                        | otherwise = (nv, 0, cp2, pu2, pd2, q2, t2) : (insereItemPorProduto (0, 0, cp1, pu1, pd1, q1, t1) ir)
+ordenaPorVenda :: [ItemVenda] -> [ItemVenda]
+ordenaPorVenda [] = []
+ordenaPorVenda (i:ir) = insereItemPorVenda i (ordenaPorVenda ir)
+
+insereItemPorVenda :: ItemVenda -> [ItemVenda] -> [ItemVenda]
+insereItemPorVenda i [] = [i]
+insereItemPorVenda i (ic:ir)    | ((ItensVenda.getTotal i) >= (ItensVenda.getTotal ic)) = i : (ic:ir)
+                                | otherwise = ic : (insereItemPorVenda i ir)
+
+getItensVendaPorVendas :: [ItemVenda] -> [Venda] -> [ItemVenda]
+getItensVendaPorVendas [] _ = []
+getItensVendaPorVendas (i:ir) v | (estaNasVendas i v) = i : (getItensVendaPorVendas ir v)
+                                | otherwise = getItensVendaPorVendas ir v
+
+estaNasVendas :: ItemVenda -> [Venda] -> Bool
+estaNasVendas i [] = False
+estaNasVendas i (v:vr)  | ((ItensVenda.getCodigoVenda i) == (Vendas.getCodigoVenda v)) = True
+                        | otherwise = estaNasVendas i vr
+
 --------------------------------------------------------------------------------
 ----------------------- Funções para Impressão de Dados ------------------------
 --------------------------------------------------------------------------------

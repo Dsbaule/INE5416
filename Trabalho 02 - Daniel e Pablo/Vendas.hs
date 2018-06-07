@@ -63,6 +63,27 @@ converteStringsVendas (v:l) = (converteStringVenda v) : (converteStringsVendas l
 converteStringVenda :: String -> Venda
 converteStringVenda = read
 
+converteVendasStrings :: [Venda] -> [String]
+converteVendasStrings [] = []
+converteVendasStrings (v:l) = (converteVendaString v) : (converteVendasStrings l)
+
+converteVendaString :: Venda -> String
+converteVendaString = show
+
+getVendasCliente :: [Venda] -> CodigoCliente -> [Venda]
+getVendasCliente [] _ = []
+getVendasCliente ((cv, cc, d, m, a, t):l) codigoCliente | (cc == codigoCliente) = (cv, cc, d, m, a, t) : (getVendasCliente l codigoCliente)
+                                                        | otherwise = (getVendasCliente l codigoCliente)
+
+getVendasIntervalo :: [Venda] -> Dia -> Mes -> Ano -> Dia -> Mes -> Ano -> [Venda]
+getVendasIntervalo [] _ _ _ _ _ _ = []
+getVendasIntervalo ((cv, cc, d, m, a, t):l) di mi ai df mf af   | (((a > ai) || ((a == ai) && ((m > mi) || ((m == mi) && (d >= di))))) && ((a < af) || ((a == af) && ((m < mf) || ((m == mf) && (d <= df)))))) = (cv, cc, d, m, a, t) : (getVendasIntervalo l di mi ai df mf af)
+                                                                | otherwise = (getVendasIntervalo l di mi ai df mf af)
+
+getFaturamento :: [Venda] -> Float
+getFaturamento [] = 0
+getFaturamento ((cv, cc, d, m, a, t):l) = t + (getFaturamento l)
+
 --------------------------------------------------------------------------------
 ----------------------- Funções para Impressão de Dados ------------------------
 --------------------------------------------------------------------------------

@@ -1,11 +1,8 @@
--- Declaração do módulo
-module Clientes where
+module Cliente where
 
--- Importações externas
-import System.IO    -- Leitura de Arquivos
+import System.IO
 
 -- Cliente composto por: Codigo,Nome,Cidade,Idade,Sexo
-
 type Codigo = Int
 type Nome   = String
 type Cidade = String
@@ -37,14 +34,6 @@ getSexo (cod, nome, cidade, idade, sexo) =  sexo
 ------------------------------ Funções Principais ------------------------------
 --------------------------------------------------------------------------------
 
-getListaClientes :: String -> [Cliente]
-getListaClientes = converteStringClientes
-
-leArquivoClientes :: IO String
-leArquivoClientes = do
-    x <- openFile "cliente.db" ReadMode
-    hGetContents x
-
 adicionarCliente :: IO()
 adicionarCliente = do
     hSetBuffering stdout NoBuffering
@@ -71,8 +60,10 @@ adicionarCliente = do
 removerCliente :: IO()
 removerCliente = do
     putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
-    stringClientes <- leArquivoClientes
-    let listaClientes = getListaClientes stringClientes
+    x <- openFile "cliente.db" ReadMode
+    cont <- hGetContents x
+    let fLines = lines cont
+    let listaClientes = converteStringsClientes fLines
     printClientes listaClientes
     putStrLn "\nCodigo do cliente a remover: "
     input <- getLine
@@ -84,8 +75,10 @@ removerCliente = do
 alterarCliente :: IO()
 alterarCliente = do
     putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
-    stringClientes <- leArquivoClientes
-    let listaClientes = getListaClientes stringClientes
+    x <- openFile "cliente.db" ReadMode
+    cont <- hGetContents x
+    let fLines = lines cont
+    let listaClientes = converteStringsClientes fLines
     printClientes listaClientes
     putStrLn "\nCodigo do cliente a alterar: "
     input <- getLine
@@ -108,12 +101,49 @@ alterarCliente = do
     overwriteClientes novaListaClientes
     writeNewCliente (codigo, nome, cidade, idade, sexo)
 
+relatorioDeClientes :: IO()
+relatorioDeClientes = do
+    putStrLn "\nClientes (Codigo - Nome - Cidade - Idade - Sexo):"
+    x <- openFile "cliente.db" ReadMode
+    cont <- hGetContents x
+    let fLines = lines cont
+    let listaClientes = converteStringsClientes fLines
+    printClientes listaClientes
+
 --------------------------------------------------------------------------------
 ------------------------------ Funções Auxiliares ------------------------------
 --------------------------------------------------------------------------------
 
-converteStringClientes :: String -> [Cliente]
-converteStringClientes = converteStringsClientes . lines
+getCliente :: [Cliente] -> Codigo -> Cliente
+getCliente ((cod, nome, cidade, idade, sexo):l) codigo  | (cod == codigo) = (cod, nome, cidade, idade, sexo)
+                                                        | otherwise = getCliente l codigo
+
+printClientes :: [Cliente] -> IO()
+printClientes [] = putStr ""
+printClientes (c:l) = do
+    printCliente c
+    printClientes l
+
+printCliente :: Cliente -> IO()
+printCliente (cod, nome, cidade, idade, 'M') = putStrLn ((show cod) ++ " - " ++ nome ++ " - " ++ cidade ++ " - " ++ (show idade) ++ " - " ++ "Masculino")
+printCliente (cod, nome, cidade, idade, 'F') = putStrLn ((show cod) ++ " - " ++ nome ++ " - " ++ cidade ++ " - " ++ (show idade) ++ " - " ++ "Feminino")
+
+removeCliente :: [Cliente] -> Codigo -> [Cliente]
+removeCliente [] _ = []
+removeCliente (a:b) c   | ((getCodigo a) == c) = b
+                        | otherwise = a : (removeCliente b c)
+
+overwriteClientes :: [Cliente] -> IO()
+overwriteClientes c = do
+    x <- openFile "cliente.db" WriteMode
+    hPutStr x (converteClientesString c)
+    hClose x
+
+writeNewCliente :: Cliente -> IO()
+writeNewCliente c = do
+    x <- openFile "cliente.db" AppendMode
+    hPutStr x (converteClienteString c)
+    hClose x
 
 converteStringsClientes :: [String] -> [Cliente]
 converteStringsClientes [] = []
@@ -128,34 +158,3 @@ converteClientesString (c:l) = (converteClienteString c) ++ (converteClientesStr
 
 converteClienteString :: Cliente -> String
 converteClienteString (codigo, nome, cidade, idade, sexo) = ("(" ++ (show codigo) ++ "," ++ (show nome) ++ ","  ++ (show cidade) ++ ","  ++ (show idade) ++ ","  ++ (show sexo) ++ ")\n")
-
-overwriteClientes :: [Cliente] -> IO()
-overwriteClientes c = do
-    x <- openFile "cliente.db" WriteMode
-    hPutStr x (converteClientesString c)
-    hClose x
-
-writeNewCliente :: Cliente -> IO()
-writeNewCliente c = do
-    x <- openFile "cliente.db" AppendMode
-    hPutStr x (converteClienteString c)
-    hClose x
-
-removeCliente :: [Cliente] -> Codigo -> [Cliente]
-removeCliente [] _ = []
-removeCliente (a:b) c   | ((getCodigo a) == c) = b
-                        | otherwise = a : (removeCliente b c)
-
---------------------------------------------------------------------------------
------------------------ Funções para Impressão de Dados ------------------------
---------------------------------------------------------------------------------
-
-printClientes :: [Cliente] -> IO()
-printClientes [] = putStr ""
-printClientes (c:l) = do
-    printCliente c
-    printClientes l
-
-printCliente :: Cliente -> IO()
-printCliente (cod, nome, cidade, idade, 'M') = putStrLn ((show cod) ++ " - " ++ nome ++ " - " ++ cidade ++ " - " ++ (show idade) ++ " - " ++ "Masculino")
-printCliente (cod, nome, cidade, idade, 'F') = putStrLn ((show cod) ++ " - " ++ nome ++ " - " ++ cidade ++ " - " ++ (show idade) ++ " - " ++ "Feminino")
