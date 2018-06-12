@@ -1,3 +1,19 @@
+/*
+1. Modique o arquivo familia.pl (disponvel no Moodle) de forma a incluir as seguintes regras:
+ tio(X,Y), onde X e o tio de Y.
+ tia(X,Y), onde X e a tia de Y.
+ primo(X,Y), onde X e o primo de Y.
+ prima(X,Y), onde X e a prima de Y.
+ primos(X,Y), onde X e primo ou prima de Y.
+ bisavo(X,Y), onde X e o bisav^o de Y.
+ bisavoh(X,Y), onde X e a bisavo de Y.
+ descendente(X,Y), onde X e descendente de Y.
+ feliz(X), onde X e feliz se possuilhos.
+ Faca consultas para testar seu programa. Inclua no seu codigo fonte as consultas realizadas e o
+resultado obtido (em comentario).
+ Crie outra regra a sua escolha, descreva seu funcionamento e exemplique seu uso por meio de uma
+consulta.
+*/
 genitor(pam, bob).
 genitor(tom, bob).
 genitor(tom, liz).
@@ -43,6 +59,6 @@ ascendente(X,Y) :- genitor(X,Y). %recursão - caso base
 ascendente(X,Y) :- genitor(X, Z), ascendente(Z, Y). %recursão - passo recursivo
 
 descendente(X,Y) :- genitor(Y,X). %recursão - caso base
-descendente(X,Y) :- genitor(Y,Z), descendente(Z,Y). %recursão - passo recursivo
+descendente(X,Y) :- genitor(Y,Z), descendente(X,Z). %recursão - passo recursivo
 
 feliz(X) :- genitor(X,_).
