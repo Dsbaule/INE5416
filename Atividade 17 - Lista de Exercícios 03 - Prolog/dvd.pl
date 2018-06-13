@@ -98,21 +98,58 @@ na estante 2.
 
 (i) Retornar a lista de todos os tı́tulos de filmes que não possuem um DVD.
 
-    
+    findall(Filme, (filme(F,Filme,_,_,_), not(dvd(_,F,_))), Filmes).
 
 (j) Retornar a lista de todos os nomes de paı́ses que possuem filmes com DVD’s nas estantes 1 ou 4.
+
+    setof(Pais, F ^ Pais ^ T ^ A ^ D ^ I1 ^ I2 ^ est1 ^ est4 ^ (filme(F,T,A,D,Pais), (dvd(I1,F,est1) ; dvd(I2,F,est4))), Paises).
+
 (k) Retornar a lista de todos os nomes de clientes que alugaram filmes no dia 7 de novembro de 2005.
+
+    setof(Cliente, C ^ D ^ T ^ (locacao(C,D,'2005-11-07'),cliente(C,Cliente,T)), Clientes).
+
 (l) Retornar a lista de todas as estantes que possuem filmes que tiveram alguma locação.
+
+    setof(Estante, C ^ D ^ Data ^ F ^ (locacao(C,D,Data),dvd(D,F,Estante)), Estantes).
+
 (m) Retornar a lista de tı́tulos de filmes alugados pela cliente ’Maria’.
+
+    setof(Titulo, T ^ C ^ Dvd ^ Data ^ F ^ E ^ A ^ Dir ^ N ^ (cliente(C,'Maria',T),locacao(C,Dvd,Data),dvd(Dvd,F,E),filme(F,Titulo,A,Dir,N)), Titulos).
+
 (n) Retornar a quantidade de filmes diferentes alugados pela cliente ’Maria’.
+
+    setof(Titulo, T ^ C ^ Dvd ^ Data ^ F ^ E ^ A ^ Dir ^ N ^ (cliente(C,'Maria',T),locacao(C,Dvd,Data),dvd(Dvd,F,E),filme(F,Titulo,A,Dir,N)), Titulos), length(Titulos, Numero).
+
 (o) Retornar a lista de tı́tulos de filmes agrupados por estante, ou seja, para cada estante mostrar os
 filmes nela.
+
+    setof(Titulo, D ^ F ^ A ^ Dir ^ N ^ (dvd(D,F,Estante), filme(F, Titulo, A, Dir, N)), Titulos).
+
 (p) Retornar a lista de nomes de paı́ses que o cliente ’Bob’ alugou filmes no dia 7 de novembro de 2005.
+
+    setof(N, T ^ C ^ Dvd ^ Data ^ F ^ E ^ A ^ Dir ^ Titulo ^ (cliente(C,'Bob',T),locacao(C,Dvd,Data),dvd(Dvd,F,E),filme(F,Titulo,A,Dir,N)), Paises).
+
 (q) Retornar a quantidade de filmes produzidos no Brasil alugados por ’Bob’.
+
+    findall(F, (cliente(C,'Bob',_),locacao(C,Dvd,_),dvd(Dvd,F,_),filme(F,_,_,_,br)), Filmes), length(Filmes, Numero).
+
 (r) Retornar a lista de tı́tulos dos filmes (sem repetições) agrupados por cliente, ou seja, para cada cliente
 mostrar os filmes alugados por ele.
+
+    setof(Titulo, T ^ C ^ Dvd ^ Data ^ F ^ E ^ A ^ Dir ^ N ^ (cliente(C,Nome,T),locacao(C,Dvd,Data),dvd(Dvd,F,E),filme(F,Titulo,A,Dir,N)), Titulos).
+
+
 (s) Retornar a lista de tı́tulos dos filmes alugados por ambos ’Zeca’ e ’Tom’, ou seja, apenas os filmes
 em comum alugados por ambos.
+
+    setof(Titulo, T1 ^ C1 ^ T2 ^ C2 ^ Dvd1 ^ Dvd2 ^ Data1 ^ Data2 ^ F ^ E1 ^ E2 ^ A ^ Dir ^ N ^ (cliente(C1,'Zeca',T1),cliente(C2,'Tom',T2),locacao(C1,Dvd1,Data1),locacao(C2,Dvd2,Data2),dvd(Dvd1,F,E1),dvd(Dvd2,F,E2),filme(F,Titulo,A,Dir,N)), Titulos).
+
 (t) Retornar a lista de tı́tulos dos filmes alugados por ’Bob’, mas não alugados por ’Maria’.
+
+    setof(Titulo, T1 ^ C1 ^ T2 ^ C2 ^ Dvd1 ^ Dvd2 ^ Data1 ^ Data2 ^ F ^ E1 ^ E2 ^ A ^ Dir ^ N ^ ( cliente(C1,'Bob',T1),locacao(C1,Dvd1,Data1),dvd(Dvd1,F,E1), not((cliente(C2,'Maria',T2),locacao(C2,Dvd2,Data2),dvd(Dvd2,F,E2))),filme(F,Titulo,A,Dir,N)), Titulos).
+
 (u) Retornar a lista de tı́tulos dos filmes nunca alugados nem por ’Bob’ e nem por ’Maria’.
+
+    setof(Titulo, F ^ Ano ^ Dir ^ Nac ^ (filme(F,Titulo,Ano,Dir,Nac),not(((dvd(Dvd1,F,Est1),locacao(C1,Dvd1,D1),cliente(C1,'Bob',T1));(dvd(Dvd2,F,Est2),locacao(C2,Dvd2,D2),cliente(C2,'Maria',T2))))), Titulos).
+
 */
