@@ -7,68 +7,66 @@ sempre possui dimensões 8x8 e o número de rainhas é 8. Comente seu código e 
 ilustrar. Adicione a consulta e o resultado no código fonte (em comentário).
 */
 
-casa(0) % casa vazia
-casa(1) % rainha
+casa(0). % casa vazia
+casa(1). % rainha
 
-posiciona([],[]).
-posiciona([X|T]) :- casa(X), posiciona(T), sum_list([X|T], 1).
-/*
-posiciona([X11, X12, X13, X14, X15, X16, X17, X18]) :-
-    casa(X11), casa(X12), casa(X13), casa(X14), casa(X15), casa(X16), casa(X17), casa(X18),
-    sum_list([X11, X12, X13, X14, X15, X16, X17, X18], N), N <= 1.
-*/
-checaRainha(X) :- sum_list(X, 0).
-checaRainha(X) :- sum_list(X, 1).
+rainha(1).
+casaVazia(0).
 
-contaRainhas([], 0).
-contaRainhas([X|T], S) :- contaRainhas(T, Y), S is X + Y.
-contaRainhas([[X|T]|T2], S) :- contaRainhas(T2, Y1), contaRainhas([X|T], Y2), S is Y1 + Y2.
+geraTabuleiro(N, T) :- geraLinhas(N, N, T).
 
-solucao(Tabuleiro) :-
+geraLinhas(_, 0, []) :- !.
+geraLinhas(N, L, [H|T]) :- L1 is L - 1, geraLinhas(N, L1, T) , geraLinha(N, H).
 
-    Tabuleiro = [
-        [X11, X12, X13, X14, X15, X16, X17, X18],
-        [X21, X22, X23, X24, X25, X26, X27, X28],
-        [X31, X32, X33, X34, X35, X36, X37, X38],
-        [X41, X42, X43, X44, X45, X46, X47, X48],
-        [X51, X52, X53, X54, X55, X56, X57, X58],
-        [X61, X62, X63, X64, X65, X66, X67, X68],
-        [X71, X72, X73, X74, X75, X76, X77, X78],
-        [X81, X82, X83, X84, X85, X86, X87, X88],
-    ],
+geraLinha(0, []) :- !.
+geraLinha(N, [H|T]) :- casa(H), N1 is N - 1, geraLinha(N1, T).
 
-    % LINHAS
-    posiciona([X11, X12, X13, X14, X15, X16, X17, X18]),
-    posiciona([X21, X22, X23, X24, X25, X26, X27, X28]),
-    posiciona([X31, X32, X33, X34, X35, X36, X37, X38]),
-    posiciona([X41, X42, X43, X44, X45, X46, X47, X48]),
-    posiciona([X51, X52, X53, X54, X55, X56, X57, X58]),
-    posiciona([X61, X62, X63, X64, X65, X66, X67, X68]),
-    posiciona([X71, X72, X73, X74, X75, X76, X77, X78]),
-    posiciona([X81, X82, X83, X84, X85, X86, X87, X88]),
+% Operação sobre o tabuleiro
 
-    % COLUNAS
-    posiciona([X11, X21, X31, X41, X51, X61, X71, X81]),
-    posiciona([X12, X22, X32, X42, X52, X62, X72, X82]),
-    posiciona([X13, X23, X33, X43, X53, X63, X73, X83]),
-    posiciona([X14, X24, X34, X44, X54, X64, X74, X84]),
-    posiciona([X15, X25, X35, X45, X55, X65, X75, X85]),
-    posiciona([X16, X26, X36, X46, X56, X66, X76, X86]),
-    posiciona([X17, X27, X37, X47, X57, X67, X77, X87]),
-    posiciona([X18, X28, X38, X48, X58, X68, X78, X88]),
+getLinha(N,M,L) :- nth0(N,M,L).
 
-    % DIAGONAIS
-    posiciona([X17, X27]),
-    posiciona([X16, X27, X37]),
-    posiciona([X15, X26, X37, X48]),
-    posiciona([X14, X25, X36, X47, X58]),
-    posiciona([X13, X24, X35, X46, X57, X68]),
-    posiciona([X12, X23, X34, X45, X56, X67, X78]),
-    posiciona([X11, X22, X33, X44, X55, X66, X77, X88]).
-    posiciona([X21, X32, X43, X54, X65, X76, X87]),
-    posiciona([]),
-    posiciona([]),
-    posiciona([]),
-    posiciona([]),
-    posiciona([]),
-    posiciona([]),
+getColuna(_,[],[]) :- !.
+getColuna(N,[H|T],[H1|T1]) :- nth0(N,H,H1), getColuna(N,T,T1).
+
+getCasa(NL,NC,M,X) :- getLinha(NL,M,L), nth0(NC,L,X).
+
+numRainhas([],0) :- !.
+numRainhas([H|T], X) :- sum_list(H,X1), numRainhas(T, X2), X is X1 + X2.
+
+% Verificação do Tabuleiro:
+
+checaLinhas(M) :- not((getLinha(_,M,L), sum_list(L,N), N > 1)).
+
+checaColunas(M) :- not((getColuna(_,M,L), sum_list(L,N), N > 1)).
+
+checaDiagonais(M) :-
+    not((
+        rainha(C1), rainha(C2),
+        getCasa(NL1, NC1, M, C1),
+        getCasa(NL2, NC2, M, C2),
+        ((NL2 - NL1 =:= NC2 - NC1);(NL2 - NL1 =:= NC1 - NC2)),
+        NL1 \== NL2,
+        NC1 \== NC2
+    )).
+
+print_matrix([]).
+print_matrix([H|T]) :- write(H), nl, print_matrix(T).
+
+solucao() :-
+    N is 8,
+    tabuleiroValido(N,Tabuleiro),
+    numRainhas(Tabuleiro,N),
+    %obtemMelhorSolucao(N,N,Tabuleiro).
+    print_matrix(Tabuleiro).
+
+obtemMelhorSolucao(Natual,N,Tabuleiro) :-
+    tabuleiroValido(N,Tabuleiro),
+    numRainhas(Tabuleiro,Natual), !.
+obtemMelhorSolucao(Natual,N,Tabuleiro) :- N1 is N - 1, obtemMelhorSolucao(Natual,N1,Tabuleiro).
+
+tabuleiroValido(N, Tabuleiro) :-
+    geraTabuleiro(N, Tabuleiro),
+    checaLinhas(Tabuleiro),
+    checaColunas(Tabuleiro),
+    checaDiagonais(Tabuleiro),
+    numRainhas(Tabuleiro,N).
