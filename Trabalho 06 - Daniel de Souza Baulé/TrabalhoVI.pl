@@ -1,12 +1,6 @@
 /*
-Trabalho VI - Programac~ao Logica - Prolog
-
-        Implemente as regras apresentados pelo artigo na linguagem Prolog. A seguir, faca algumas consultas (ao
-        menos 3) e crie um PDF, ou outro arquivo de texto, com as consultas e o resultado apresentado pelo seu sistema
-        especialista.
-
-        A legibilidade, organizac~ao do codigo, bem como o uso de comentarios tambem ser~ao considerados na
-        avaliac~ao.
+Trabalho VI - Programação Lógica - Prolog
+Sistema Especialista para Diagnósticos de Doenças Transmitidas pelo Aedes Aegypti
 */
 
 % Regras de 1 a 3 (Temperatura)
@@ -52,7 +46,7 @@ dorNasArticulacoes(if_then_else('Sofre de dor nas articulacoes?',
                 false)).
 
 % Regras de 16 a 18 (Edema nas articulações)
-edemaNasArticulacoes(if_then_else('Aparição de edema nas articulacoes?',
+edemaNasArticulacoes(if_then_else('Aparicao de edema nas articulacoes?',
                 if_then_else('Edema de intensidade leve?',
                         doenca(zika),
                         if_then_else('Edema de intensidade moderada ou intensa?',
@@ -92,9 +86,11 @@ coceira(if_then_else('Sofre de Coceira?',
                                 if_then_else("Sofre de dor muscular leve?",
                                         doenca(chikungunya),
                                         false)),
-                        if_then_else("Coceira intensa?",
+                        if_then_else("Coceira de intensidade moderada?",
                                 doenca(zika),
-                                false)),
+                                if_then_else("Coceira intensa?",
+                                        doenca(zika),
+                                        false))),
                 false)).
 
 % Regras de 32 a 34 (Alteracoes no sistema nervoso)
